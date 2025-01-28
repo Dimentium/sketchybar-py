@@ -1,0 +1,20 @@
+[project]
+name = "sketchybar-py"
+version = "0.1.0"
+description = "A tiny lib for Sketchybar configuring with Python"
+readme = "README.md"
+authors = [
+    { name = "Dmitry Kuznetsov", email = "dk@lemd.cc" }
+]
+requires-python = ">=3.10"
+dependencies = []
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.ruff]
+line-length = 120
+indent-width = 4
+target-version = "py310"
+
