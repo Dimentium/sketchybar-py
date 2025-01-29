@@ -93,6 +93,7 @@ class MyAwesomeSketchyBar(Sketchybar):
         self.autoload()
 
     @Sketchybar.item(
+        enabled=True,
         position="left",
         icon="",
         properties={"label.drawing": "off"}
@@ -124,8 +125,8 @@ class MyAwesomeSketchyBar(Sketchybar):
         self.label = percentage + "%"
 
     @Sketchybar.item(
-        position="right", 
-        update_freq=10, 
+        position="right",
+        update_freq=10,
         properties={"icon.drawing": "off"}
     )
     def r1_clock(self):
@@ -162,6 +163,7 @@ Main class for configuring SketchyBar.
 
 #### Item Properties
 Common properties that can be used in item definitions:
+- `enabled`: True or False - used for `autoload()` control
 - `position`: "left", "right", or "center".
 - `update_freq`: Update frequency in seconds.
 - `subscribe`: List of events to subscribe to.
@@ -180,4 +182,3 @@ Dmitry Kuznetsov
 ## Related
 
 - [SketchyBar](https://github.com/FelixKratz/SketchyBar) - The original SketchyBar project
-

@@ -109,13 +109,15 @@ class Sketchybar:
         else:
             self.logger.warning(f"    method '{self.name}' not found.")
 
-    def item(position="left", icon="", label="", subscribe=[], update_freq=0, **kwargs):
+    def item(enabled=True, position="left", icon="", label="", subscribe=[], update_freq=0, **kwargs):
         def inner_function(f):
             @wraps(f)
             def innermost_function(self):
                 if self.name:
                     return f(self)
                 else:
+                    if not enabled:
+                        return
                     item_name = f.__name__
                     self.add_item(item_name, position)
                     self.set_item(item_name, f"icon={icon or '+'}", f"label={label or item_name}")
