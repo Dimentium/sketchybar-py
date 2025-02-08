@@ -1,10 +1,11 @@
-import os
-import subprocess
 import inspect
 import logging
+import os
+import subprocess
 from functools import wraps
+from typing import Any
 
-SB_ENV_VARS: list = [
+SB_ENV_VARS: list[str] = [
     "_",
     "BAR_NAME",
     "INFO",
@@ -18,7 +19,9 @@ SB_ENV_VARS: list = [
 
 
 class Sketchybar:
-    def __init__(self, logging_level="INFO"):
+    name: str = ""
+
+    def __init__(self, logging_level: str = "INFO"):
         self.logging_level: str = logging_level
         self.init_logging()
 
@@ -40,7 +43,9 @@ class Sketchybar:
 
     @icon.setter
     def icon(self, value: str) -> None:
-        self.set_item(self.name, f"icon={value}")
+        value = value.strip("\n")
+        visible = "icon.drawing=on" if value else "icon.drawing=off"
+        self.set_item(self.name, f"icon={value}", visible)
         self._icon = value
 
     @property
@@ -50,10 +55,11 @@ class Sketchybar:
     @label.setter
     def label(self, value: str) -> None:
         value = value.strip("\n")
-        self.set_item(self.name, f"label={value}")
+        visible = "label.drawing=on" if value else "label.drawing=off"
+        self.set_item(self.name, f"label={value}", visible)
         self._label = value
 
-    def flatten(self, items):
+    def flatten(self, items: str | tuple[Any, Any] | list[Any] | set[Any] | dict[str, Any]) -> list[Any]:
         flat_list = []
         if not isinstance(items, (str, dict)):
             for item in items:
@@ -69,10 +75,10 @@ class Sketchybar:
             flat_list.append(items)
         return flat_list
 
-    def dbg(self, action="", *args):
-        self.logger.debug((self.name or "Sketchybar") + " : " + str(action) + " " + str(self.flatten(args)))
+    def dbg(self, action: str = "", *args: str | dict[Any, Any] | list[Any]) -> None:
+        self.logger.debug(f"{self.name or 'Sketchybar'} : {action} {self.flatten(args)}")
 
-    def do(self, *args) -> int:
+    def do(self, *args: str | dict[Any, Any] | list[Any]) -> int:
         self.dbg("    args:", args)
         cmd = self.flatten(["sketchybar"] + self.flatten([self.flatten(arg) for arg in args]))
         self.dbg("    runs", cmd)
@@ -81,18 +87,18 @@ class Sketchybar:
     def run(self, args: str):
         return subprocess.run(self.flatten(args), shell=True, text=True, capture_output=True)
 
-    def add_item(self, name: str, position: str):
+    def add_item(self, name: str, position: str) -> None:
         self.dbg("adding item ", name, position)
         self.do("--add", "item", name, position)
         self.do("--set", name, f"script={self._}")
         self.dbg("    item added", name)
 
-    def set_item(self, name: str, *properties):
+    def set_item(self, name: str, *properties: Any) -> None:
         self.dbg("updating item", name)
         self.do("--set", name, self.flatten(properties))
         self.dbg("    item updated", name)
 
-    def subscribe(self, name: str, *events):
+    def subscribe(self, name: str, *events: str | list[str]) -> None:
         self.dbg("subscribing item", name, events)
         self.do("--subscribe", name, self.flatten(events))
         self.dbg("    item subscribed", name)
