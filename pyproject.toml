@@ -4,7 +4,7 @@ dynamic = ["version"]
 description = "A tiny lib for Sketchybar configuring with Python"
 readme = "README.md"
 authors = [{ name = "Dmitry Kuznetsov", email = "dk@lemd.cc" }]
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = ["pydantic~=2.10.6"]
 
 [project.urls]
@@ -20,4 +20,21 @@ path = "./src/sketchybar_py/__about__.py"
 [tool.ruff]
 line-length = 120
 indent-width = 4
-target-version = "py310"
+target-version = "py311"
+include = ["pyproject.toml", "src/**/*.py"]
+exclude = [
+    ".git",
+    ".venv",
+    "dist",
+]
+
+[tool.ruff.format]
+quote-style = "single"
+indent-style = "space"
+docstring-code-format = true
+docstring-code-line-length = "dynamic"
+
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = ["D203", "D213", "COM812"]
+flake8-quotes.inline-quotes="single"
