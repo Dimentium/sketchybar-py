@@ -7,20 +7,20 @@ from .constants import Constants
 
 
 def dict_to_class(data: Dict[Any, Any]) -> Any:
-    return type("DictClass", (object,), data)
+    return type('DictClass', (object,), data)
 
 
-def onoff(value: Any) -> Literal["on", "off"]:
-    if str(value).lower() in [1, "1", "on", "true", "enable", "yes"]:
-        return "on"
+def onoff(value: Any) -> Literal['on', 'off']:
+    if str(value).lower() in [1, '1', 'on', 'true', 'enable', 'yes']:
+        return 'on'
     else:
-        return "off"
+        return 'off'
 
 
 class SBEvent(BaseModel):
     _: Optional[str] = None
     info: Optional[str] = None
-    name: str = ""
+    name: str = ''
     sender: Optional[str] = None
     bar_name: Optional[str] = None
     config_dir: Optional[str] = None
@@ -51,7 +51,7 @@ class ARGB(BaseModel):
         Accepts int (0x11223344) or str ('#11223344' or '11223344')
         """
         if isinstance(value, str):
-            value = int(value.replace("#", ""), 16)
+            value = int(value.replace('#', ''), 16)
 
         processed_value = value & 0xFFFFFFFF  # Ensure 32-bit value
         super().__init__(value=processed_value, **data)
@@ -60,7 +60,7 @@ class ARGB(BaseModel):
 class Bar(BaseModel):
     color: str
     border_color: str
-    position: Literal["top", "bottom"] = "top"
+    position: Literal['top', 'bottom'] = 'top'
     height: int = 25
     notch_display_height: int = 0
     margin: int = 0
@@ -72,16 +72,16 @@ class Bar(BaseModel):
     padding_right: int = 0
     notch_width: int = 200
     notch_offset: int = 0
-    display: Literal["main", "all"] | list[int] = "main"
+    display: Literal['main', 'all'] | list[int] = 'main'
 
-    hidden: Literal["on", "off", "current"]
-    topmost: Literal["on", "off", "window"]
-    sticky: Literal["on", "off"]
-    font_smoothing: Literal["on", "off"]
-    shadow: Literal["on", "off"]
+    hidden: Literal['on', 'off', 'current']
+    topmost: Literal['on', 'off', 'window']
+    sticky: Literal['on', 'off']
+    font_smoothing: Literal['on', 'off']
+    shadow: Literal['on', 'off']
 
-    show_in_fullscreen: Literal["on", "off"]
-    drawing: Literal["on", "off"]
+    show_in_fullscreen: Literal['on', 'off']
+    drawing: Literal['on', 'off']
 
     items: list[str] = list()
 
@@ -100,12 +100,12 @@ class Font(BaseModel):
     size: float
 
     # Common font styles
-    STYLE_REGULAR: ClassVar[str] = "Regular"
-    STYLE_BOLD: ClassVar[str] = "Bold"
-    STYLE_ITALIC: ClassVar[str] = "Italic"
-    STYLE_BOLD_ITALIC: ClassVar[str] = "Bold Italic"
+    STYLE_REGULAR: ClassVar[str] = 'Regular'
+    STYLE_BOLD: ClassVar[str] = 'Bold'
+    STYLE_ITALIC: ClassVar[str] = 'Italic'
+    STYLE_BOLD_ITALIC: ClassVar[str] = 'Bold Italic'
 
-    @model_validator(mode="before")
+    @model_validator(mode='before')
     @classmethod
     def parse_font_string(cls, data: Any) -> dict[str, str | float]:
         """
@@ -115,35 +115,35 @@ class Font(BaseModel):
         """
         if isinstance(data, str):
             try:
-                family, style, size = data.split(":")
-                return {"family": family.strip(), "style": style.strip(), "size": float(size)}
+                family, style, size = data.split(':')
+                return {'family': family.strip(), 'style': style.strip(), 'size': float(size)}
             except ValueError:
                 raise ValueError("Font string must be in format 'family:style:size'")
         return data
 
-    @field_validator("size")
+    @field_validator('size')
     @classmethod
     def validate_size(cls, v: float) -> float:
         """Validate that font size is positive"""
         if v <= 0:
-            raise ValueError("Font size must be positive")
+            raise ValueError('Font size must be positive')
         return v
 
     def __str__(self) -> str:
         """Convert font to string representation"""
-        return f"{self.family}:{self.style}:{self.size:.2f}"
+        return f'{self.family}:{self.style}:{self.size:.2f}'
 
-    def with_size(self, new_size: float) -> "Font":
+    def with_size(self, new_size: float) -> 'Font':
         """Create a new Font instance with a different size"""
         return Font(family=self.family, style=self.style, size=new_size)
 
-    def with_style(self, new_style: str) -> "Font":
+    def with_style(self, new_style: str) -> 'Font':
         """Create a new Font instance with a different style"""
         return Font(family=self.family, style=new_style, size=self.size)
 
 
 class Shadow(BaseModel):
-    drawing: Optional[Literal["on", "off"]] = None
+    drawing: Optional[Literal['on', 'off']] = None
     color: Optional[str] = None
     angle: Optional[int] = None
     distance: Optional[int] = None
@@ -151,12 +151,12 @@ class Shadow(BaseModel):
 
 class Image(BaseModel):
     value: Optional[str] = None
-    drawing: Optional[Literal["on", "off"]] = None
+    drawing: Optional[Literal['on', 'off']] = None
     scale: Optional[float] = None
 
 
 class Background(BaseModel):
-    drawing: Optional[Literal["on", "off"]] = None
+    drawing: Optional[Literal['on', 'off']] = None
     color: Optional[str] = None
     border_color: Optional[str] = None
     border_width: Optional[int] = None
@@ -171,32 +171,32 @@ class Background(BaseModel):
 
 
 class TextElement(BaseModel):
-    value: str = ""
-    drawing: Optional[Literal["on", "off"]] = None
-    highlight: Optional[Literal["on", "off"]] = None
+    value: str = ''
+    drawing: Optional[Literal['on', 'off']] = None
+    highlight: Optional[Literal['on', 'off']] = None
     color: Optional[str] = None
     highlight_color: Optional[str] = None
     padding_left: Optional[int] = None
     padding_right: Optional[int] = None
     y_offset: Optional[int] = None
     font: Optional[Font] = None
-    width: Optional[int | Literal["dynamic"]] = None
+    width: Optional[int | Literal['dynamic']] = None
     scroll_duration: Optional[int] = None
-    align: Optional[Literal["left", "center", "right"]] = None
+    align: Optional[Literal['left', 'center', 'right']] = None
     background: Background = Background()
     shadow: Shadow = Shadow()
 
 
 class Geometry(BaseModel):
-    drawing: Optional[Literal["on", "off"]] = None
-    position: Optional[Literal["left", "center", "right", "q", "e"]] = None
+    drawing: Optional[Literal['on', 'off']] = None
+    position: Optional[Literal['left', 'center', 'right', 'q', 'e']] = None
     associated_space_mask: Optional[int] = None
     associated_display_mask: Optional[int] = None
-    ignore_association: Optional[Literal["on", "off"]] = None
+    ignore_association: Optional[Literal['on', 'off']] = None
     y_offset: Optional[int] = None
     padding_left: Optional[int] = None
     padding_right: Optional[int] = None
-    scroll_texts: Optional[Literal["on", "off"]] = None
+    scroll_texts: Optional[Literal['on', 'off']] = None
     width: Optional[int] = None
     background: Background = Background()
 
@@ -211,15 +211,15 @@ class Scripting(BaseModel):
     click_script: Optional[str] = None
     update_freq: Optional[int] = None
     update_mask: Optional[int] = None
-    updates: Optional[Literal["on", "off", "when_shown"]] = None
+    updates: Optional[Literal['on', 'off', 'when_shown']] = None
 
 
 class SBItemRaw(BaseModel):
-    name: str = ""
-    type: Literal["item"] = "item"
+    name: str = ''
+    type: Literal['item'] = 'item'
     geometry: Geometry = Geometry()
-    icon: TextElement = TextElement(value="")
-    label: TextElement = TextElement(value="")
+    icon: TextElement = TextElement(value='')
+    label: TextElement = TextElement(value='')
     scripting: Scripting = Scripting()
     bounding_rects: Optional[Dict[str, BoundingRect]] = None
 

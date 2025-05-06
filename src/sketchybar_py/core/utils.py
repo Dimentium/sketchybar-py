@@ -20,7 +20,7 @@ def init_logging(debug: bool = False) -> logging.Logger:
     stderr_handler.setLevel(logging.ERROR)
 
     # Create formatters and add it to handlers
-    format_str = "%(asctime)s - %(name)s\n%(levelname)s - %(message)s"
+    format_str = '%(asctime)s - %(name)s\n%(levelname)s - %(message)s'
     stdout_formatter = logging.Formatter(format_str)
     stderr_formatter = logging.Formatter(format_str)
 
@@ -47,7 +47,7 @@ def flat_list(items: Any) -> List[Any]:
                 result.append(item)
     elif isinstance(items, dict):
         for k, v in items.items():  # pyright: ignore
-            result.append(f"{k}={v}")
+            result.append(f'{k}={v}')
     else:
         result.append(items)
     return result
